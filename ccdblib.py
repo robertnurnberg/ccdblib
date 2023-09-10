@@ -240,10 +240,9 @@ class ccdbAPI:
 
 
 def json2eval(r):
-    # TODO: this needs to be adapted to Chinese chess
     # turns a json response from the API into an evaluation, if possible
-    # output: on success eval/score E as reported by ccdb, otherwise "mated", "invalid", f"{pc}men w/ cr" or ""
-    # E is either "??" or an integer E. in the latter case 30000-ply = mate in ply, 20000-ply cursed win in ply, 25000-ply tb win in ply
+    # output: on success eval/score E as reported by ccdb, otherwise "mated", "invalid" or ""
+    # E is either "??" or an integer E. in the latter case 30000-ply = mate in ply
     if r is None:  # only needed for buggy json responses from ccdb
         return "invalid json reply"
     if "status" not in r:
@@ -261,17 +260,10 @@ def json2eval(r):
         s = r["eval"]
     elif "score" in r:
         s = r["score"]
-    if type(s) == int and abs(s) > 25000:
+    if type(s) == int and abs(s) > 10000:
         ply = 30000 - abs(s)
         s = "" if s > 0 else "-"
         s += f"M{ply}"
-    if (r["status"] == "unknown" or s == "??") and "fen" in r:
-        # 7men TB positions with castling rights will never get an eval
-        parts = r["fen"].split()
-        pc = sum(p in "pnbrqk" for p in parts[0].lower())
-        cf = len(parts) >= 3 and parts[2] != "-"
-        if pc <= 7 and cf:
-            return f"{pc}men w/ cr"
     if s == "??":
         s = ""
     return s
