@@ -88,7 +88,7 @@ class fens2ccdb:
 
 async def main():
     parser = argparse.ArgumentParser(
-        description='A simple script to request evals from chessdb.cn for a list of FENs stored in a file. The script will add "; EVALSTRING;" to every line containing a FEN. Lines beginning with "#" are ignored, as well as any text after the first four fields of each FEN.',
+        description='A simple script to request evals from Chinese chessdb.cn for a list of FENs stored in a file. The script will add "; EVALSTRING;" to every line containing a FEN. Lines beginning with "#" are ignored, as well as any text after the first four fields of each FEN.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(

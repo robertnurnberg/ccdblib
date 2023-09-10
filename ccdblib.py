@@ -129,7 +129,7 @@ class ccdbAPI:
                 lasterror = "Invalid board"
                 success = True
 
-            elif content["status"] == "invalid mvoelist":
+            elif content["status"] == "invalid movelist":
                 # nothing to be done, bail out and return to caller
                 lasterror = "Invalid movelist"
                 success = True
