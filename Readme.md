@@ -10,10 +10,11 @@ Provide a simple library with wrapper functions for the API of ccdb. All the wra
 
 ## Usage
 
-By way of example, two small application scripts are provided.
+By way of example, three small application scripts are provided.
 
 * [`fens2ccdb`](#fens2ccdb) - request evaluations from ccdb for FENs stored in a file
 * [`ccdbpvpoll`](#ccdbpvpoll) - monitor a position's PV on ccdb over time
+* [`cdbbulkpv`](#cdbbulkpv) - bulk-request PVs from ccdb for positions stored in a file
 
 ## Installation
 
@@ -83,6 +84,37 @@ Sample usage and output:
 > python ccdbpvpoll.py
   2023-09-11T13:12:25.923307:    2cp -- c3c4 b7c7 h2e2 c9e7 b0a2 i9i8 e2e6 d9e8 h0g2 b9d8 e6e5 i8f8 g3g4 g6g5 g4g5 f8g8 c0e2 g8g5 e3e4 h9g7 g2e3 h7h5 e3g4 h5e5 e4e5 c7c4 d0e1 c4e4 b2b4 a9b9 a0b0 e4f4 i0i1 g7h5 i1f1 g5e5 g4h6 f4d4 f1f3 c6c5 a3a4 e5d5 b4b8 d5d6 h6f5 d6d7 f3b3 h5f4 b3f3 f4h5
 
+```
+
+### `cdbbulkpv`
+
+A command line program to bulk-request from ccdb the PVs of all the positions stored in a file.
+
+```
+usage: ccdbbulkpv.py [-h] [--stable] [-c CONCURRENCY] [-b BATCHSIZE] [-u USER] [--forever] filename
+
+A script that queries Chinese chessdb.cn for the PV of all positions in a file.
+
+positional arguments:
+  filename              PGN file if suffix is .pgn, o/w a text file with FENs
+
+options:
+  -h, --help            show this help message and exit
+  --stable              pass "&stable=1" option to API (default: False)
+  -c CONCURRENCY, --concurrency CONCURRENCY
+                        Maximum concurrency of requests to ccdb. (default: 16)
+  -b BATCHSIZE, --batchSize BATCHSIZE
+                        Number of positions processed in parallel. Small values guarantee more responsive output, large values give faster turnaround. (default: None)
+  -u USER, --user USER  Add this username to the http user-agent header (default: None)
+  --forever             Run the script in an infinite loop. (default: False)
+```
+
+Sample usage and output:
+```
+> python ccdbbulkpv.py ../python-chinese-chess/fen > fens_pv.txt
+Read 1000 FENs from file ../python-chinese-chess/fen.
+Started parsing the positions with concurrency 16 ...
+Done. Polled 1000 positions in 19.5s.
 ```
 
 ---
