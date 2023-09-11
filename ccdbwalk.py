@@ -118,8 +118,6 @@ class ccdbwalk:
             ply0 = 0
         else:
             ply0 = 1
-            if self.verbose:
-                retStr += f"1... "
         ply = ply0
         while "moves" in r and ply - ply0 < self.depthLimit:
             m = select_move(r["moves"], temp=self.moveTemp)
@@ -131,7 +129,7 @@ class ccdbwalk:
                 url += " " + m
             board.push(move)
             ply += 1
-            if o := board.outcome() is not None:
+            if (o := board.outcome()) is not None:
                 r = {}
                 if self.verbose:
                     retStr += o.result()
