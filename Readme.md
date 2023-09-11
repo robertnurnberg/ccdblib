@@ -13,7 +13,7 @@ By way of example, four small application scripts are provided.
 * [`ccdbwalk`](#ccdbwalk) - walk through ccdb towards the leafs, extending existing lines
 * [`fens2ccdb`](#fens2ccdb) - request evaluations from ccdb for FENs stored in a file
 * [`ccdbpvpoll`](#ccdbpvpoll) - monitor a position's PV on ccdb over time
-* [`cdbbulkpv`](#cdbbulkpv) - bulk-request PVs from ccdb for positions stored in a file
+* [`ccdbbulkpv`](#ccdbbulkpv) - bulk-request PVs from ccdb for positions stored in a file
 
 ## Installation
 
@@ -135,7 +135,7 @@ Sample usage and output:
   2023-09-11T14:12:26.582862:    2cp -- c3c4 b7c7 h2e2 c9e7 b0a2 i9i8 e2e6 d9e8 h0g2 b9d8 e6e4 a9b9 a0b0 i8f8 i0h0 f8f5 c0e2 h9i7 a3a4 b9b3 h0h1 f5d5 i3i4 d8e6 b2c2 b3b0 a2b0 c6c5 c4c5 e6c5 h1b1 c7c2 b1b9 d5d9 b9d9 e9d9 b0c2 c5e4 e3e4 h7h4 e4e5 i7g8 d0e1 g8h6 c2b4 h4a4 b4a6 a4e4 a6b8 d9e9 e0d0 h6i4 g3g4 g6g5 g2i3 e4e3 g4g5 i4g5 i3g4 e3d3 e5f5 g5h7 g4h6 d3d6 b8c6 h7f6 f5f6
 ```
 
-### `cdbbulkpv`
+### `ccdbbulkpv`
 
 A command line program to bulk-request from ccdb the PVs of all the positions stored in a file.
 
