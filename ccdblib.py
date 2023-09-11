@@ -120,6 +120,12 @@ class ccdbAPI:
                 lasterror = "Enqueued position"
                 success = True
 
+            elif action == "queryrule" and content == {}:
+                # empty dict is returned for missing movelist
+                content = {"status": "invalid movelist"}
+                lasterror = "Invalid movelist"
+                success = True
+
             elif "status" not in content:
                 lasterror = "Malformed reply, not containing status"
                 continue
@@ -149,6 +155,7 @@ class ccdbAPI:
             elif content["status"] == "ok":
                 if (
                     (action == "queryall" and "moves" not in content)
+                    or (action == "queryrule" and "moves" not in content)
                     or (
                         action == "querybest"
                         and "move" not in content
@@ -175,7 +182,6 @@ class ccdbAPI:
                             or "pv" not in content
                         )
                     )
-                    # TODO: check for missing keys for queryrule
                 ):
                     lasterror = "Unexpectedly missing keys"
                     continue
@@ -228,8 +234,11 @@ class ccdbAPI:
         # same as querypv, but returns _stable_ PV (always GUI's top move)
         return await self.generic_call("querypv", fen, "&stable=1")
 
-    async def queryrule(self, fen):
-        return await self.generic_call("queryrule", fen)
+    async def queryrule(self, fen, movelist, reptimes=1):
+        # pass movelist as list of uci strings
+        return await self.generic_call(
+            "queryrule", fen, f"&movelist={'|'.join(movelist)}&reptimes={reptimes}"
+        )
 
     async def queue(self, fen):
         # returns dict with key "status"
@@ -253,7 +262,7 @@ def json2eval(r):
     if r["status"] == "invalid board":
         return "invalid"
     s = ""
-    if "moves" in r:
+    if "moves" in r and "score" in r["moves"][0]:
         s = r["moves"][0]["score"]
     elif "eval" in r:
         s = r["eval"]
