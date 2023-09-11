@@ -2,16 +2,15 @@
 
 The library `ccdblib.py` allows to conveniently use the API of the Chinese Chess Cloud Database [chessdb.cn](https://chessdb.cn/query_en/) (ccdb), the largest online database of Chinese chess positions and openings, from within Python.
 
-## This repo is work in progress ...
-
 ## Purpose
 
 Provide a simple library with wrapper functions for the API of ccdb. All the wrapper functions will continuously query ccdb until a satisfactory response has been received.
 
 ## Usage
 
-By way of example, three small application scripts are provided.
+By way of example, four small application scripts are provided.
 
+* [`ccdbwalk`](#ccdbwalk) - walk through ccdb towards the leafs, extending existing lines
 * [`fens2ccdb`](#fens2ccdb) - request evaluations from ccdb for FENs stored in a file
 * [`ccdbpvpoll`](#ccdbpvpoll) - monitor a position's PV on ccdb over time
 * [`cdbbulkpv`](#cdbbulkpv) - bulk-request PVs from ccdb for positions stored in a file
@@ -23,6 +22,55 @@ git clone https://github.com/robertnurnberg/ccdblib && git clone https://github.
 ```
 
 ---
+
+### `ccdbwalk`
+
+A command line program to walk within the tree of ccdb, starting either from a list of FENs or from the (opening) lines given in a PGN file, possibly extending each explored line within ccdb by one ply.
+
+```
+usage: ccdbwalk.py [-h] [-v] [--moveTemp MOVETEMP] [--backtrack BACKTRACK] [--depthLimit DEPTHLIMIT] [--TBwalk] [-c CONCURRENCY] [-b BATCHSIZE] [-u USER] [--forever] filename
+
+A script that walks within the Chinese chessdb.cn tree, starting from FENs or lines in a PGN file. Based on the given parameters, the script selects a move in each node, walking towards the leafs. Once an unknown position is reached, it is queued for analysis and the walk terminates.
+
+positional arguments:
+  filename              PGN file if suffix is .pgn, o/w a text file with FENs
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         Increase output with -v, -vv, -vvv etc. (default: 0)
+  --moveTemp MOVETEMP   Temperature T for move selection: in each node of the tree the probability to pick a move m will be proportional to exp((score(m)-score(bestMove))/T). Here unscored moves get assigned the score of the currently worst move. If T is zero, then always select the best move. (default: 10)
+  --backtrack BACKTRACK
+                        The number of plies to walk back from the newly created leaf towards the root, queuing each position on the way for analysis. (default: 0)
+  --depthLimit DEPTHLIMIT
+                        The upper limit of plies the walk is allowed to last. (default: 200)
+  --TBwalk              Continue the walk beyond piece limit (>= 10 pieces and >= 4 attackers). (default: False)
+  -c CONCURRENCY, --concurrency CONCURRENCY
+                        Maximum concurrency of requests to ccdb. (default: 16)
+  -b BATCHSIZE, --batchSize BATCHSIZE
+                        Number of positions processed in parallel. Small values guarantee more responsive output, large values give faster turnaround. (default: None)
+  -u USER, --user USER  Add this username to the http user-agent header (default: None)
+  --forever             Run the script in an infinite loop. (default: False)
+```
+
+Sample usage and output:
+```
+> python ccdbwalk.py fens.txt -vvv --backtrack 4
+Read 3 FENs from file fens.txt.
+Started parsing the positions with concurrency 16 ...
+FEN 1/3: rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - (2cp) h2e2 h9g7 a3a4 g6g5 h0g2 i9h9 b0c2 b7d7 c3c4 b9c7 i0h0 a9b9 h0h4 b9b3 a0a2 d9e8 c2d4 
+  URL: https://chessdb.cn/query_en/?rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR_w_-_-_moves_h2e2_h9g7_a3a4_g6g5_h0g2_i9h9_b0c2_b7d7_c3c4_b9c7_i0h0_a9b9_h0h4_b9b3_a0a2_d9e8_c2d4
+  Plies queued for analysis: 17 ... 13.
+FEN 2/3: 4kab2/4a4/4b4/2Nc1P1Np/9/9/9/4B4/4A4/3K1AB2 b - - () 1... e8d7 [15pieces w/ 3attackers limit]
+  URL: https://chessdb.cn/query_en/?4kab2/4a4/4b4/2Nc1P1Np/9/9/9/4B4/4A4/3K1AB2_b_-_-_moves_e8d7
+  Plies queued for analysis: 2 ... 1.
+FEN 3/3: 2baka3/5n3/2c1b2r1/2p1p4/pn4p2/1CP5p/P3P1P2/2N1BC1cN/4A4/4KABR1 w - - (0cp) b4i4 b5c3 i4h4 h2g2 
+  URL: https://chessdb.cn/query_en/?2baka3/5n3/2c1b2r1/2p1p4/pn4p2/1CP5p/P3P1P2/2N1BC1cN/4A4/4KABR1_w_-_-_moves_b4i4_b5c3_i4h4_h2g2
+  Plies queued for analysis: 4 ... 0.
+Done processing fens.txt in 5.7s.
+
+> date
+Mon 11 Sep 18:06:03 CEST 2023
+```
 
 ### `fens2ccdb`
 

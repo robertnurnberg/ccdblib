@@ -194,7 +194,7 @@ async def main():
     parser.add_argument(
         "--TBwalk",
         action="store_true",
-        help="Continue the walk beyond piece limit (>= 10 pieces and >= 4 attackers.",
+        help="Continue the walk beyond piece limit (>= 10 pieces and >= 4 attackers).",
     )
     parser.add_argument(
         "-c",
