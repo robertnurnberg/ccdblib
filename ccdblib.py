@@ -173,7 +173,6 @@ class ccdbAPI:
                             "score" not in content
                             or "depth" not in content
                             or "pv" not in content
-                            or "pvSAN" not in content
                         )
                     )
                     # TODO: check for missing keys for queryrule
@@ -194,7 +193,7 @@ class ccdbAPI:
         return content
 
     async def queryall(self, fen):
-        # returns dict with keys "status", "moves" and "ply" where "moves" is a sorted list of dict's with keys "uci", "san", "score", "rank", "note" and "winrate" (sorted by eval and rank)
+        # returns dict with keys "status", "moves" and "ply" where "moves" is a sorted list of dict's with keys "uci", "score", "rank", "note" and "winrate" (sorted by eval and rank)
         # goes 1 ply along scored moves, gets eval of these children, makes that the (updated) scores of the scored moves and reports these
         return await self.generic_call("queryall", fen)
 
@@ -221,7 +220,7 @@ class ccdbAPI:
         return await self.generic_call("queryscore", fen)
 
     async def querypv(self, fen):
-        # returns dict with keys "status", "score", "depth", "pv", "pvSAN"
+        # returns dict with keys "status", "score", "depth", "pv"
         # also triggers automatic back-propagation on ccdb
         return await self.generic_call("querypv", fen)
 
@@ -269,32 +268,14 @@ def json2eval(r):
     return s
 
 
-def json2pv(r, san=False, ply=None):
+def json2pv(r, ply=None):
     # turns the PV from a json response from the API into a string
     # output: PV as a string, if possible, otherwise ""
     if r is None:  # only needed for buggy json responses from ccdb
         return "invalid json reply"
     if "status" not in r:
         return ""
-    if san:
-        if "pvSAN" not in r:
-            return ""
-        if ply is not None or "fen" in r:
-            if ply is None:
-                _, _, side = r["fen"].partition(" ")  # side to move for numbering
-                ply = 0 if side[0] == "w" else 1
-            ply += 1
-            s = f"{ply//2}..." if ply % 2 == 0 else ""
-            for m in r["pvSAN"]:
-                if ply % 2 == 1:
-                    s += f"{(ply+1)//2}. "
-                s += m + " "
-                ply += 1
-        else:  # without the fen we do not know if white or black to move
-            s = " ".join(tuple(r["pvSAN"]))
-        return s
-    else:
-        if "pv" not in r:
-            return ""
-        s = " ".join(tuple(r["pv"]))
-        return s
+    if "pv" not in r:
+        return ""
+    s = " ".join(tuple(r["pv"]))
+    return s
