@@ -57,19 +57,19 @@ Sample usage and output:
 > python ccdbwalk.py fens.txt -vvv --backtrack 4
 Read 3 FENs from file fens.txt.
 Started parsing the positions with concurrency 16 ...
-FEN 1/3: rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - (2cp) h2e2 h9g7 a3a4 g6g5 h0g2 i9h9 b0c2 b7d7 c3c4 b9c7 i0h0 a9b9 h0h4 b9b3 a0a2 d9e8 c2d4 
-  URL: https://chessdb.cn/query_en/?rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR_w_-_-_moves_h2e2_h9g7_a3a4_g6g5_h0g2_i9h9_b0c2_b7d7_c3c4_b9c7_i0h0_a9b9_h0h4_b9b3_a0a2_d9e8_c2d4
-  Plies queued for analysis: 17 ... 13.
-FEN 2/3: 4kab2/4a4/4b4/2Nc1P1Np/9/9/9/4B4/4A4/3K1AB2 b - - () 1... e8d7 [15pieces w/ 3attackers limit]
-  URL: https://chessdb.cn/query_en/?4kab2/4a4/4b4/2Nc1P1Np/9/9/9/4B4/4A4/3K1AB2_b_-_-_moves_e8d7
-  Plies queued for analysis: 2 ... 1.
-FEN 3/3: 2baka3/5n3/2c1b2r1/2p1p4/pn4p2/1CP5p/P3P1P2/2N1BC1cN/4A4/4KABR1 w - - (0cp) b4i4 b5c3 i4h4 h2g2 
-  URL: https://chessdb.cn/query_en/?2baka3/5n3/2c1b2r1/2p1p4/pn4p2/1CP5p/P3P1P2/2N1BC1cN/4A4/4KABR1_w_-_-_moves_b4i4_b5c3_i4h4_h2g2
+FEN 1/3: rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - (2cp) b2d2 h7e7 g0e2 h9g7 f0e1 g6g5 b0a2 b9a7 a0b0 a9b9 b0b4 b7d7 b4h4 a6a5 g3g4 b9b5 h0g2 g5g4 h4g4 g7f5 g4g6 i9h9 h2i2 b5e5 a2c1 d7d6 g6g8 a7b5 c1d3 b5d4 
+  URL: https://chessdb.cn/query_en/?rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR_w_-_-_moves_b2d2_h7e7_g0e2_h9g7_f0e1_g6g5_b0a2_b9a7_a0b0_a9b9_b0b4_b7d7_b4h4_a6a5_g3g4_b9b5_h0g2_g5g4_h4g4_g7f5_g4g6_i9h9_h2i2_b5e5_a2c1_d7d6_g6g8_a7b5_c1d3_b5d4
+  Plies queued for analysis: 30 ... 26.
+FEN 2/3: 4kab2/4a4/4b4/2Nc1P1Np/9/9/9/4B4/4A4/3K1AB2 b - - () d6e6 [15pieces w/ 3attackers limit]
+  URL: https://chessdb.cn/query_en/?4kab2/4a4/4b4/2Nc1P1Np/9/9/9/4B4/4A4/3K1AB2_b_-_-_moves_d6e6
+  Plies queued for analysis: 1 ... 0.
+FEN 3/3: 2baka3/5n3/2c1b2r1/2p1p4/pn4p2/1CP5p/P3P1P2/2N1BC1cN/4A4/4KABR1 w - - (0cp) b4i4 h2h3 i2g1 h3h2 
+  URL: https://chessdb.cn/query_en/?2baka3/5n3/2c1b2r1/2p1p4/pn4p2/1CP5p/P3P1P2/2N1BC1cN/4A4/4KABR1_w_-_-_moves_b4i4_h2h3_i2g1_h3h2
   Plies queued for analysis: 4 ... 0.
-Done processing fens.txt in 5.7s.
+Done processing fens.txt in 9.2s.
 
 > date
-Mon 11 Sep 18:06:03 CEST 2023
+Tue 12 Sep 07:33:18 CEST 2023
 ```
 
 ### `fens2ccdb`

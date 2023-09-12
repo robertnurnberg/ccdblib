@@ -114,11 +114,7 @@ class ccdbwalk:
             retStr += f"FEN {lineIdx+1}/{self.gn}: {board.epd()} ("
             retStr += f"{score}{'cp' if type(score) is int else ''}) "
             url = f"https://chessdb.cn/query_en/?{board.epd()}"
-        if board.turn == cchess.RED:
-            ply0 = 0
-        else:
-            ply0 = 1
-        ply = ply0
+        ply = ply0 = 0
         while "moves" in r and ply - ply0 < self.depthLimit:
             m = select_move(r["moves"], temp=self.moveTemp)
             move = cchess.Move.from_uci(m)
