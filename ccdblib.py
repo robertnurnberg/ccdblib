@@ -43,6 +43,10 @@ class AtomicDict:
             self._cache[key] = value
 
 
+def ban2action(ban):
+    return "&ban=move:" + "|".join(f"move:{move}" for move in ban) if ban else ""
+
+
 class ccdbAPI:
     def __init__(self, concurrency, user=None):
         # use a session to keep alive the connection to the server
@@ -198,41 +202,41 @@ class ccdbAPI:
         content["fen"] = fen  # add "fen" key to dict, used e.g. for PV SAN
         return content
 
-    async def queryall(self, fen):
+    async def queryall(self, fen, ban=[]):
         # returns dict with keys "status", "moves" and "ply" where "moves" is a sorted list of dict's with keys "uci", "score", "rank", "note" and "winrate" (sorted by eval and rank)
         # goes 1 ply along scored moves, gets eval of these children, makes that the (updated) scores of the scored moves and reports these
-        return await self.generic_call("queryall", fen)
+        return await self.generic_call("queryall", fen, ban2action(ban))
 
-    async def showall(self, fen):
+    async def showall(self, fen, ban=[]):
         # same as queryall, but returns _all_ possible moves, with "??" for score of unscored moves
-        return await self.generic_call("queryall", fen, "&showall=1")
+        return await self.generic_call("queryall", fen, ban2action(ban) + "&showall=1")
 
-    async def querybest(self, fen):
+    async def querybest(self, fen, ban=[]):
         # returns one of the rank == 2 moves in a dict with keys "status" and either "move", "search_moves or "egtb"
         # also triggers automatic back-propagation on ccdb
-        return await self.generic_call("querybest", fen)
+        return await self.generic_call("querybest", fen, ban2action(ban))
 
-    async def query(self, fen):
+    async def query(self, fen, ban=[]):
         # returns one of the rank > 0 moves in a dict with keys "status" and either "move", "search_moves or "egtb"
         # also triggers automatic back-propagation on ccdb
-        return await self.generic_call("query", fen)
+        return await self.generic_call("query", fen, ban2action(ban))
 
-    async def querysearch(self, fen):
+    async def querysearch(self, fen, ban=[]):
         # returns all of the rank > 0 moves in a dict with keys "status" and either "search_moves" or "egtb"
-        return await self.generic_call("querysearch", fen)
+        return await self.generic_call("querysearch", fen, ban2action(ban))
 
-    async def queryscore(self, fen):
+    async def queryscore(self, fen, ban=[]):
         # returns dict with keys "status", "eval", "ply"
-        return await self.generic_call("queryscore", fen)
+        return await self.generic_call("queryscore", fen, ban2action(ban))
 
-    async def querypv(self, fen):
+    async def querypv(self, fen, ban=[]):
         # returns dict with keys "status", "score", "depth", "pv"
         # also triggers automatic back-propagation on ccdb
-        return await self.generic_call("querypv", fen)
+        return await self.generic_call("querypv", fen, ban2action(ban))
 
-    async def querypvstable(self, fen):
+    async def querypvstable(self, fen, ban=[]):
         # same as querypv, but returns _stable_ PV (always GUI's top move)
-        return await self.generic_call("querypv", fen, "&stable=1")
+        return await self.generic_call("querypv", fen, ban2action(ban) + "&stable=1")
 
     async def queryrule(self, fen, movelist, reptimes=1):
         # pass movelist as list of uci strings
