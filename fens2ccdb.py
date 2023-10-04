@@ -5,7 +5,9 @@ import argparse, asyncio, sys, time, ccdblib
 
 
 class fens2ccdb:
-    def __init__(self, filename, output, quiet, shortFormat, concurrency, user):
+    def __init__(
+        self, filename, output, shortFormat, quiet, enqueue, concurrency, user
+    ):
         self.input = filename
         self.lines = []
         self.scored = 0
@@ -27,6 +29,7 @@ class fens2ccdb:
         if self.display:
             print(f"Loaded {self.scored} FENs ...", file=self.display)
         self.shortFormat = shortFormat
+        self.enqueue = enqueue
         self.concurrency = concurrency
         self.ccdb = ccdblib.ccdbAPI(concurrency, user)
         self.unknown = ccdblib.AtomicInteger()
@@ -59,10 +62,21 @@ class fens2ccdb:
                     f"The file {self.input} contained {self.unknown.get()} new chessdb.cn positions.",
                     file=self.display,
                 )
-                print(
-                    f"Rerunning the script after a short break should provide their evals.",
-                    file=self.display,
-                )
+                if self.enqueue == 0:
+                    print(
+                        "Rerunning the script after a short break should provide their evals.",
+                        file=self.display,
+                    )
+                elif self.enqueue == 1:
+                    print(
+                        "They have now been queued for analysis.",
+                        file=self.display,
+                    )
+                else:
+                    print(
+                        "They have been queued for analysis, and their evals have been obtained.",
+                        file=self.display,
+                    )
 
     async def parse_single_line(self, line):
         if line.startswith("#"):  # ignore comments
@@ -72,6 +86,14 @@ class fens2ccdb:
         score = ccdblib.json2eval(r)
         if r.get("status") == "unknown" and score == "":
             self.unknown.inc()
+            attempts = self.enqueue
+            while attempts and r["status"] == "unknown":
+                r = await self.ccdb.queue(fen)
+                attempts -= 1
+                if attempts:
+                    await asyncio.sleep(5)
+                    r = await self.ccdb.queryscore(fen)
+                    score = ccdblib.json2eval(r)
         if self.shortFormat:
             if score == "mated":
                 score = "#"
@@ -106,6 +128,13 @@ async def main():
         help="Suppress all unnecessary output to the screen.",
     )
     parser.add_argument(
+        "-e",
+        "--enqueue",
+        action="count",
+        default=0,
+        help="-e queues unknown positions once, otherwise up to given number of times or until an eval comes back.",
+    )
+    parser.add_argument(
         "-c",
         "--concurrency",
         help="Maximum concurrency of requests to ccdb.",
@@ -129,8 +158,9 @@ async def main():
     f2c = fens2ccdb(
         args.input,
         args.output,
-        args.quiet,
         args.shortFormat,
+        args.quiet,
+        args.enqueue,
         args.concurrency,
         args.user,
     )
