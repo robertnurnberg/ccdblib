@@ -77,7 +77,7 @@ Tue 12 Sep 07:33:18 CEST 2023
 A command line program to bulk-request evaluations from ccdb for all the FENs/EPDs stored within a file.
 
 ```
-usage: fens2ccdb.py [-h] [--shortFormat] [--quiet] [-c CONCURRENCY] [-b BATCHSIZE] [-u USER] input [output]
+usage: fens2ccdb.py [-h] [--shortFormat] [--quiet] [-e] [-c CONCURRENCY] [-b BATCHSIZE] [-u USER] input [output]
 
 A simple script to request evals from Chinese chessdb.cn for a list of FENs stored in a file. The script will add "; EVALSTRING;" to every line containing a FEN. Lines beginning with "#" are ignored, as well as any text after the first four fields of each FEN.
 
@@ -89,6 +89,7 @@ options:
   -h, --help            show this help message and exit
   --shortFormat         EVALSTRING will be just a number, or an "M"-ply mate score, or "#" for checkmate, or "". (default: False)
   --quiet               Suppress all unnecessary output to the screen. (default: False)
+  -e, --enqueue         -e queues unknown positions once, otherwise up to given number of times or until an eval comes back. (default: 0)
   -c CONCURRENCY, --concurrency CONCURRENCY
                         Maximum concurrency of requests to ccdb. (default: 16)
   -b BATCHSIZE, --batchSize BATCHSIZE
